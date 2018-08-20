@@ -1,6 +1,5 @@
 package com.epages.restdocs.openapi.sample;
 
-import com.epages.restdocs.openapi.ResourceSnippetParameters;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
@@ -10,19 +9,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static com.atlassian.oai.validator.mockmvc.SwaggerValidatorMatchers.swagger;
 import static com.epages.restdocs.openapi.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.openapi.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.openapi.ResourceDocumentation.resource;
 import static lombok.AccessLevel.PRIVATE;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.data.rest.webmvc.RestMediaTypes.HAL_JSON;
 import static org.springframework.data.rest.webmvc.RestMediaTypes.TEXT_URI_LIST;
 import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,25 +72,8 @@ public class CartIntegrationTest extends BaseIntegrationTest {
                 .andExpect(jsonPath("products[0].quantity", is(1)))
                 .andExpect(jsonPath("products[0].product.name", notNullValue()))
                 .andExpect(jsonPath("total", notNullValue()))
-                .andDo(document("cart-get",
-                        resource(
-                                ResourceSnippetParameters.builder()
-                                        .description("Get a cart by id")
-                                        .pathParameters(
-                                                parameterWithName("id").description("the cart id"))
-                                        .responseFields(
-                                                fieldWithPath("total").description("Total amount of the cart."),
-                                                fieldWithPath("products").description("The product line item of the cart."),
-                                                subsectionWithPath("products[]._links.product").description("Link to the product."),
-                                                fieldWithPath("products[].quantity").description("The quantity of the line item."),
-                                                subsectionWithPath("products[].product").description("The product the line item relates to."),
-                                                subsectionWithPath("_links").description("Links section."))
-                                        .links(
-                                                linkWithRel("self").ignored(),
-                                                linkWithRel("order").description("Link to order the cart."))
-                                        .build()
-                        )
-                ));
+                .andExpect(swagger().isValid(this.getClass().getClassLoader().getResource("modified-openapi.json").toString()))
+        ;
     }
 
     @Test

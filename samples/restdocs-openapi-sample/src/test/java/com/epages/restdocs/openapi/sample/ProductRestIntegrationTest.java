@@ -8,14 +8,13 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.atlassian.oai.validator.mockmvc.SwaggerValidatorMatchers.swagger;
 import static com.epages.restdocs.openapi.MockMvcRestDocumentationWrapper.document;
 import static lombok.AccessLevel.PRIVATE;
 import static org.hamcrest.Matchers.hasSize;
@@ -92,11 +91,8 @@ public class ProductRestIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", notNullValue()))
                 .andExpect(jsonPath("price", notNullValue()))
-                .andDo(document("product-get", responseFields(
-                        fields.withPath("name").description("The name of the product."),
-                        fields.withPath("price").description("The price of the product."),
-                        subsectionWithPath("_links").description("Links section")
-                )))
+                .andExpect(swagger().isValid(this.getClass().getClassLoader().getResource("modified-openapi.json").toString()))
+
         ;
     }
 

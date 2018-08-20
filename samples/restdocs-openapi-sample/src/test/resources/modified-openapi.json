@@ -1,0 +1,370 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.0.0",
+    "title" : "My API"
+  },
+  "host" : "localhost:8080",
+  "basePath" : "/api",
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/products/{id}" : {
+      "get" : {
+        "produces" : [ "application/hal+json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "examples" : {
+              "application/hal+json" : "{\n  \"name\" : \"Fancy pants\",\n  \"price\" : 49.99,\n  \"_links\" : {\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/products/7\"\n    },\n    \"product\" : {\n      \"href\" : \"http://localhost:8080/products/7\"\n    }\n  }\n}"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/products_id1651376241"
+            }
+          }
+        }
+      },
+      "patch" : {
+        "consumes" : [ "application/json-patch+json", "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/products_id-1335775164"
+          },
+          "x-examples" : {
+            "application/json-patch+json" : "[{\"op\":\"replace\",\"path\":\"/name\",\"value\":\"Fancy socks\"}]",
+            "application/json" : "{\n    \"name\": \"Updated name\",\n    \"price\": -12.12\n}"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "examples" : {
+              "application/json" : "{\n  \"name\" : \"Fancy socks\",\n  \"price\" : 49.99,\n  \"_links\" : {\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/products/6\"\n    },\n    \"product\" : {\n      \"href\" : \"http://localhost:8080/products/6\"\n    }\n  }\n}"
+            }
+          },
+          "400" : {
+            "description" : "",
+            "examples" : {
+              "application/json" : "{\"errors\":[{\"entity\":\"Product\",\"property\":\"price\",\"invalidValue\":-12.12,\"message\":\"must be greater than 0\"}]}"
+            }
+          }
+        }
+      }
+    },
+    "/products" : {
+      "get" : {
+        "produces" : [ "application/hal+json" ],
+        "parameters" : [ {
+          "name" : "page",
+          "in" : "query",
+          "description" : "The page to be requested.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "Parameter determining the size of the requested page.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Information about sorting items.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "examples" : {
+              "application/hal+json" : "{\n  \"_embedded\" : {\n    \"products\" : [ {\n      \"name\" : \"Fancy pants\",\n      \"price\" : 49.99,\n      \"_links\" : {\n        \"self\" : {\n          \"href\" : \"http://localhost:8080/products/1\"\n        },\n        \"product\" : {\n          \"href\" : \"http://localhost:8080/products/1\"\n        }\n      }\n    }, {\n      \"name\" : \"Fancy pants\",\n      \"price\" : 49.99,\n      \"_links\" : {\n        \"self\" : {\n          \"href\" : \"http://localhost:8080/products/2\"\n        },\n        \"product\" : {\n          \"href\" : \"http://localhost:8080/products/2\"\n        }\n      }\n    } ]\n  },\n  \"_links\" : {\n    \"first\" : {\n      \"href\" : \"http://localhost:8080/products?page=0&size=2\"\n    },\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/products{&sort}\",\n      \"templated\" : true\n    },\n    \"next\" : {\n      \"href\" : \"http://localhost:8080/products?page=1&size=2\"\n    },\n    \"last\" : {\n      \"href\" : \"http://localhost:8080/products?page=4&size=2\"\n    },\n    \"profile\" : {\n      \"href\" : \"http://localhost:8080/profile/products\"\n    }\n  },\n  \"page\" : {\n    \"size\" : 2,\n    \"totalElements\" : 10,\n    \"totalPages\" : 5,\n    \"number\" : 0\n  }\n}"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/products1464399003"
+            }
+          }
+        }
+      }
+    },
+    "/carts/{id}/products" : {
+      "post" : {
+        "summary" : "Add products to a cart",
+        "description" : "Add products to a cart",
+        "consumes" : [ "text/uri-list" ],
+        "produces" : [ "application/hal+json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/carts_id_products1766798485"
+          },
+          "x-examples" : {
+            "text/uri-list" : "http://localhost/products/1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "examples" : {
+              "application/hal+json" : "{\n  \"total\" : 49.99,\n  \"products\" : [ {\n    \"quantity\" : 1,\n    \"product\" : {\n      \"name\" : \"Fancy pants\",\n      \"price\" : 49.99\n    },\n    \"_links\" : {\n      \"product\" : {\n        \"href\" : \"http://localhost:8080/products/1\"\n      }\n    }\n  } ],\n  \"_links\" : {\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/carts/1\"\n    },\n    \"order\" : {\n      \"href\" : \"http://localhost:8080/carts/1/order\"\n    }\n  }\n}"
+            }
+          }
+        }
+      }
+    },
+    "/carts/{id}/order" : {
+      "post" : {
+        "summary" : "Order a cart",
+        "description" : "Order a cart",
+        "produces" : [ "application/hal+json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "examples" : {
+              "application/hal+json" : "{\n  \"total\" : 49.99,\n  \"products\" : [ {\n    \"quantity\" : 1,\n    \"product\" : {\n      \"name\" : \"Fancy pants\",\n      \"price\" : 49.99\n    },\n    \"_links\" : {\n      \"product\" : {\n        \"href\" : \"http://localhost:8080/products/3\"\n      }\n    }\n  } ],\n  \"_links\" : {\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/carts/3\"\n    }\n  }\n}"
+            }
+          }
+        }
+      }
+    },
+    "/carts/{id}" : {
+      "get" : {
+        "summary" : "Get a cart by id",
+        "description" : "Get a cart by id",
+        "produces" : [ "application/hal+json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "the cart id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "",
+            "examples" : {
+              "application/hal+json" : "{\n  \"total\" : 49.99,\n  \"products\" : [ {\n    \"quantity\" : 1,\n    \"product\" : {\n      \"name\" : \"Fancy pants\",\n      \"price\" : 49.99\n    },\n    \"_links\" : {\n      \"product\" : {\n        \"href\" : \"http://localhost:8080/products/2\"\n      }\n    }\n  } ],\n  \"_links\" : {\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/carts/2\"\n    },\n    \"order\" : {\n      \"href\" : \"http://localhost:8080/carts/2/order\"\n    }\n  }\n}"
+            },
+            "schema" : {
+              "$ref" : "#/definitions/carts_id-898104429"
+            }
+          }
+        }
+      }
+    },
+    "/carts" : {
+      "post" : {
+        "summary" : "Create a cart",
+        "description" : "Create a cart",
+        "produces" : [ "application/hal+json" ],
+        "responses" : {
+          "201" : {
+            "description" : "",
+            "examples" : {
+              "application/hal+json" : "{\n  \"total\" : 0,\n  \"products\" : [ ],\n  \"_links\" : {\n    \"self\" : {\n      \"href\" : \"http://localhost:8080/carts/4\"\n    },\n    \"order\" : {\n      \"href\" : \"http://localhost:8080/carts/4/order\"\n    }\n  }\n}"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "products1464399003" : {
+      "type" : "object",
+      "properties" : {
+        "_links" : {
+          "type" : "object",
+          "description" : "Links section",
+          "properties" : { }
+        },
+        "_embedded" : {
+          "type" : "object",
+          "properties" : {
+            "products" : {
+              "type" : "array",
+              "items" : {
+                "type" : "object",
+                "properties" : {
+                  "_links" : {
+                    "type" : "object",
+                    "description" : "The product links.",
+                    "properties" : { }
+                  },
+                  "price" : {
+                    "type" : "number",
+                    "description" : "The price of the product."
+                  },
+                  "name" : {
+                    "type" : "string",
+                    "description" : "The name of the product."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "page" : {
+          "type" : "object",
+          "description" : "Paging information",
+          "properties" : {
+            "number" : {
+              "type" : "number",
+              "description" : "The current page number."
+            },
+            "size" : {
+              "type" : "number",
+              "description" : "The size of one page."
+            },
+            "totalPages" : {
+              "type" : "number",
+              "description" : "The total number of pages."
+            },
+            "totalElements" : {
+              "type" : "number",
+              "description" : "The total number of elements found."
+            }
+          }
+        }
+      }
+    },
+    "products_id-1335775164" : {
+      "type" : "object",
+      "required" : [ "name", "price" ],
+      "properties" : {
+        "[]" : {
+          "type" : "object",
+          "properties" : {
+            "path" : {
+              "type" : "string",
+              "description" : "The path of the field."
+            },
+            "op" : {
+              "type" : "string",
+              "description" : "Patch operation."
+            },
+            "value" : {
+              "type" : "string",
+              "description" : "The value to assign."
+            }
+          }
+        },
+        "price" : {
+          "type" : "number",
+          "description" : "The price of the product."
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the product.",
+          "minLength" : 1
+        }
+      },
+      "example" : "{\n    \"name\": \"Updated name\",\n    \"price\": -12.12\n}"
+    },
+    "products1261464376" : {
+      "type" : "object",
+      "required" : [ "name", "price" ],
+      "properties" : {
+        "price" : {
+          "type" : "number",
+          "description" : "The price of the product."
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the product.",
+          "minLength" : 1
+        }
+      },
+      "example" : "{\n    \"name\": \"Fancy pants\",\n    \"price\": 49.99\n}"
+    },
+    "carts_id_products1766798485" : {
+      "example" : "http://localhost/products/1"
+    },
+    "carts_id-898104429" : {
+      "type" : "object",
+      "properties" : {
+        "total" : {
+          "type" : "number",
+          "description" : "Total amount of the cart."
+        },
+        "_links" : {
+          "type" : "object",
+          "description" : "Links section.",
+          "properties" : { }
+        },
+        "products" : {
+          "type" : "array",
+          "description" : "The product line item of the cart.",
+          "items" : {
+            "type" : "object",
+            "properties" : {
+              "product" : {
+                "type" : "object",
+                "description" : "The product the line item relates to.",
+                "properties" : { }
+              },
+              "quantity" : {
+                "type" : "number",
+                "description" : "The quantity of the line item."
+              },
+              "_links" : {
+                "type" : "object",
+                "properties" : {
+                  "product" : {
+                    "type" : "object",
+                    "description" : "Link to the product.",
+                    "properties" : { }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "products_id1651376241" : {
+      "type" : "object",
+      "required" : [ "price" ],
+      "properties" : {
+        "_links" : {
+          "type" : "object",
+          "description" : "Links section",
+          "properties" : { }
+        },
+        "price" : {
+          "type" : "number",
+          "description" : "The price of the product."
+        }
+      }
+    }
+  }
+}
