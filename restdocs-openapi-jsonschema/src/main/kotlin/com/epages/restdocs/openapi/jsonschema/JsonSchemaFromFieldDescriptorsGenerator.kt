@@ -1,8 +1,8 @@
-package com.epages.restdocs.openapi3.generator.schema
+package com.epages.restdocs.openapi.jsonschema
 
-import com.epages.restdocs.openapi3.generator.schema.ConstraintResolver.isRequired
-import com.epages.restdocs.openapi3.generator.schema.ConstraintResolver.maxLengthString
-import com.epages.restdocs.openapi3.generator.schema.ConstraintResolver.minLengthString
+import com.epages.restdocs.openapi.jsonschema.ConstraintResolver.isRequired
+import com.epages.restdocs.openapi.jsonschema.ConstraintResolver.maxLengthString
+import com.epages.restdocs.openapi.jsonschema.ConstraintResolver.minLengthString
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.everit.json.schema.ArraySchema
@@ -20,9 +20,9 @@ import java.util.ArrayList
 import java.util.Collections.emptyList
 import java.util.function.Predicate
 
-internal class JsonSchemaFromFieldDescriptorsGenerator {
+class JsonSchemaFromFieldDescriptorsGenerator {
 
-    internal fun generateSchema(fieldDescriptors: List<com.epages.restdocs.openapi.model.FieldDescriptor>, title: String? = null): String {
+    fun generateSchema(fieldDescriptors: List<com.epages.restdocs.openapi.model.FieldDescriptor>, title: String? = null): String {
         val jsonFieldPaths = reduceFieldDescriptors(fieldDescriptors)
             .map { JsonFieldPath.compile(it) }
 
@@ -38,11 +38,7 @@ internal class JsonSchemaFromFieldDescriptorsGenerator {
      */
     private fun reduceFieldDescriptors(fieldDescriptors: List<com.epages.restdocs.openapi.model.FieldDescriptor>): List<FieldDescriptorWithSchemaType> {
         return fieldDescriptors
-            .map {
-                FieldDescriptorWithSchemaType.fromFieldDescriptor(
-                    it
-                )
-            }
+            .map { FieldDescriptorWithSchemaType.fromFieldDescriptor(it) }
             .foldRight(listOf()) { fieldDescriptor, groups -> groups
                 .firstOrNull { it.equalsOnPathAndType(fieldDescriptor) }
                 ?.let { groups } // omit the descriptor it is considered equal and can be omitted
@@ -110,9 +106,7 @@ internal class JsonSchemaFromFieldDescriptorsGenerator {
         // we have a direct match when there are no remaining segments or when the only following element is an array
         return Predicate { jsonFieldPath ->
             val remainingSegments = jsonFieldPath.remainingSegments(traversedSegments)
-            remainingSegments.isEmpty() || remainingSegments.size == 1 && JsonFieldPath.isArraySegment(
-                remainingSegments[0]
-            )
+            remainingSegments.isEmpty() || remainingSegments.size == 1 && JsonFieldPath.isArraySegment(remainingSegments[0])
         }
     }
 
@@ -131,10 +125,7 @@ internal class JsonSchemaFromFieldDescriptorsGenerator {
         description: String?
     ) {
         val remainingSegments = fields[0].remainingSegments(traversedSegments)
-        if (remainingSegments.isNotEmpty() && JsonFieldPath.isArraySegment(
-                remainingSegments[0]
-            )
-        ) {
+        if (remainingSegments.isNotEmpty() && JsonFieldPath.isArraySegment(remainingSegments[0])) {
             traversedSegments.add(remainingSegments[0])
             builder.addPropertySchema(
                 propertyName, ArraySchema.builder()
@@ -192,11 +183,7 @@ internal class JsonSchemaFromFieldDescriptorsGenerator {
         optional: Boolean,
         ignored: Boolean,
         attributes: com.epages.restdocs.openapi.model.Attributes,
-        private val jsonSchemaPrimitiveTypes: Set<String> = setOf(
-            jsonSchemaPrimitiveTypeFromDescriptorType(
-                type
-            )
-        )
+        private val jsonSchemaPrimitiveTypes: Set<String> = setOf(jsonSchemaPrimitiveTypeFromDescriptorType(type))
     ) : com.epages.restdocs.openapi.model.FieldDescriptor(path, description, type, optional, ignored, attributes) {
 
         fun jsonSchemaType(): Schema {
@@ -216,9 +203,7 @@ internal class JsonSchemaFromFieldDescriptorsGenerator {
                 optional = this.optional || fieldDescriptor.optional, // optional if one it optional
                 ignored = this.ignored && fieldDescriptor.optional, // ignored if both are optional
                 attributes = attributes,
-                jsonSchemaPrimitiveTypes = jsonSchemaPrimitiveTypes + jsonSchemaPrimitiveTypeFromDescriptorType(
-                    fieldDescriptor.type
-                )
+                jsonSchemaPrimitiveTypes = jsonSchemaPrimitiveTypes + jsonSchemaPrimitiveTypeFromDescriptorType(fieldDescriptor.type)
             )
         }
 

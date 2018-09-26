@@ -1,4 +1,4 @@
-package com.epages.restdocs.openapi3.generator.schema
+package com.epages.restdocs.openapi.jsonschema
 
 internal object ConstraintResolver {
 
